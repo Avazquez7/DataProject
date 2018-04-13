@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+<style>
+
+    .card{
+        width:300px;        background-color:red;
+        padding:10px;       margin:10px;
+        border-radius:10px; box-shadow:black 5px 5px 5px;
+        display:inline-block;  font-size:10px;     
+    }
+    	img{
+		width:90%;
+		margin:5px;
+		border-radius:10px;
+		box-shadow:black 5px 5px 5px;
+	}
+    
+
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDm9ccaTR3wlv1WZJQs3KZb9fJyMf5cqpA"></script>
+<script type="text/template" id="crashTemplate">
+<div class='card'>
+        
+        <h1>State:{{state}}</h1>
+        <h1>Fine amount:$ {{fine_amount}}</h1>
+     
+        <h1>Precinct involved: {{precinct}}</h1>
+        <h1>Summons id number: {{summons_number}}</h1>
+        <h1>Violation: {{violation}}</h1>
+        <h1>Violation status: {{violation_status}}</h1>
+        <h1>Time of violation: {{violation_time}}</h1>
+      <h1>Date of violation:{{issue_date}}</h1>
+           
+        
+                
+       
+    </div>
+    </script>
+<script>
+/*
+Feb.5,2018
+Angelica Vazquez
+using an external file to display its data onto a webpage using json
+*/ 
+//function to introduce json into a separate funtion
+function loadJSON(){        
+    $.getJSON("https://data.cityofnewyork.us/resource/uvbq-3m68.json", function(result){        
+        displaycrashInfo(result);
+    }); 
+}
+//function used to display the poster of all batman posters in imdb 
+function displaycrashInfo(data){
+
+    var build = "";
+    var output = document.getElementById("op");
+    var state=document.getElementById("state");
+    var crash = document.getElementById("crashsight").value;
+    var template = document.getElementById("crashTemplate").innerHTML;
+    
+    for(i=0; i<data.length; i++){    
+          var state = data[i].state;
+          var county = data[i].county; 
+          var image=data[i].summons_image;
+          var precinct=data[i].precinct;
+          build+="<a href='"+image+"'>";
+         // var simg=data[i].summons_image;
+        //build+="<img src='"+simg+"'>"
+        
+            if (data[i].state.toLowerCase() != -1){
+                build += Mustache.render(template, data[i]);
+                
+            }
+       
+    }
+    output.innerHTML = build;    
+}
+
+         
+
+</script>
+
+</head>
+<body>
+
+<input type="text" id="crashsight" value="queens" placeholder="Enter crash sight type">
+<button onclick="loadJSON()">Show parking violations</button><hr> 
+     
+ <div id="googleMap"></div>
+    <div id="op"></div>
+
+</body>
+
+</html>
